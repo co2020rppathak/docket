@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Test Results{% endblock %}
+{% block content %}
+    <p class="tr-back"><a href="{{ url_for('index') }}">&larr; Back to the document vault</a></p>
+
+    <header class="tr-head">
+        <h1>Test Results</h1>
+    </header>
+
+    <div class="tr-headline">
+        <div class="tr-card ok">
+            <b>158</b>
+            <span>automated tests passing</span>
+            <small>Expiry, status, categorization and application tests</small>
+        </div>
+        <div class="tr-card ok">
+            <b>34<i>/34</i></b>
+            <span>real mutation checks detected</span>
+            <small>One equivalent mutant excluded (see D)</small>
+        </div>
+        <div class="tr-card ok">
+            <b>0</b>
+            <span>wrong detections, 60 shipped-image evaluation</span>
+            <small>46 of 52 printed expiry dates found. The 300-document evaluation is reported separately in B.</small>
+        </div>
+    </div>
+
+    <!-- A -->
+    <section class="tr-section">
+        <h2><span class="tr-letter">A</span>Automated Testing</h2>
+        <div class="tr-panel">
+            <p class="tr-total"><b>158</b> passing tests <span class="status valid">All passing</span></p>
+            <ul class="tr-rows">
+                <li><span class="tr-label">Expiry</span><span class="tr-bar" aria-hidden="true"><i style="width:29.75%"></i></span><b>47</b></li>
+                <li><span class="tr-label">Status</span><span class="tr-bar" aria-hidden="true"><i style="width:8.23%"></i></span><b>13</b></li>
+                <li><span class="tr-label">Categorization</span><span class="tr-bar" aria-hidden="true"><i style="width:12.66%"></i></span><b>20</b></li>
+                <li><span class="tr-label">Application</span><span class="tr-bar" aria-hidden="true"><i style="width:49.37%"></i></span><b>78</b></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- B -->
+    <section class="tr-section">
+        <h2><span class="tr-letter">B</span>Expiry Detection</h2>
+        <div class="tr-two">
+            <div class="tr-panel">
+                <h3>300 synthetic documents</h3>
+                <div class="tr-metrics">
+                    <div class="tr-metric ok"><b>231</b><span>correct auto-fills</span></div>
+                    <div class="tr-metric warn"><b>1</b><span>incorrect</span></div>
+                    <div class="tr-metric ok"><b>0</b><span>false hits</span></div>
+                </div>
+            </div>
+            <div class="tr-panel">
+                <h3>60 shipped sample images</h3>
+                <p class="tr-big"><b>46</b> of 52 <span>printed expiry dates detected correctly</span></p>
+                <span class="tr-bar tall" aria-hidden="true"><i style="width:88.46%"></i></span>
+                <div class="tr-metrics two">
+                    <div class="tr-metric ok"><b>0</b><span>incorrect detections</span></div>
+                    <div class="tr-metric ok"><b>8</b><span>documents without a printed expiry date were correctly left without an expiry date</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- C -->
+    <section class="tr-section">
+        <h2><span class="tr-letter">C</span>Categorization Testing</h2>
+        <div class="tr-panel">
+            <p class="tr-big"><b>180</b> <span>documents tested</span></p>
+            <span class="tr-bar tall split" aria-hidden="true"><i class="good" style="width:93.89%"></i><i class="unsure" style="width:6.11%"></i></span>
+            <div class="tr-metrics">
+                <div class="tr-metric ok"><b>169</b><span>correct suggestions</span></div>
+                <div class="tr-metric soon"><b>11</b><span>uncertain</span></div>
+                <div class="tr-metric ok"><b>0</b><span>incorrect confident suggestions</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- D -->
+    <section class="tr-section">
+        <h2><span class="tr-letter">D</span>Reliability Testing</h2>
+        <div class="tr-panel">
+            <ul class="tr-checks">
+                <li>
+                    <strong>34/34 real mutation checks detected</strong>
+                    <span>The code was deliberately broken to confirm the tests notice. One equivalent mutant
+                        was excluded because it did not change behaviour.</span>
+                </li>
+                <li><strong>Database migration and restart persistence</strong></li>
+                <li><strong>Expiry boundary testing</strong>
+                    <span>31, 30, 29, 1 and 0 days, and overdue dates.</span></li>
+                <li><strong>Multiple-date and suspicious-date handling</strong></li>
+                <li><strong>Manual correction and confirmation behaviour</strong></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- E -->
+    <section class="tr-section">
+        <h2><span class="tr-letter warn">E</span>Known Limitations</h2>
+        <div class="tr-panel limits">
+            <ul class="tr-limits">
+                <li>OCR accuracy declines with difficult image conditions such as glare, shadows, angles and blur.</li>
+                <li>Supported formats are JPG and PNG.</li>
+                <li>English text only.</li>
+                <li>Results come from internal and sample-based testing, not independent real-world validation.</li>
+            </ul>
+        </div>
+    </section>
+
+    <p class="tr-end"><a class="btn" href="{{ url_for('index') }}">Back to the document vault</a></p>
+{% endblock %}

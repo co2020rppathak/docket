@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block page_title %}{{ site_name }} - {{ project_title }}{% endblock %}
+{% block main %}
+<main class="bleed">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="hero">
+        <div class="hero-inner">
+            <div>
+                <h1>{{ site_name }}</h1>
+                <p class="project-title">{{ project_title }}</p>
+                <p class="hook">Your passport expires in 41 days. Would you have noticed?</p>
+                <p class="lead">Upload a photo of a policy, warranty card, certificate or ID. The system reads it, finds when it expires, files it in the right category, and tells you before it runs out.</p>
+                <div class="actions">
+                    <a class="btn large" href="{{ url_for('register') }}">Create an account</a>
+                    <a class="btn large secondary" href="{{ url_for('login') }}">Login</a>
+                </div>
+                <p class="proof">Text is read on your own computer with Tesseract OCR. Every date and category it finds is shown as a guess for you to confirm.</p>
+            </div>
+
+            <div class="specimen" aria-hidden="true">
+                <div class="specimen-sheet">
+                    <div class="issuer">Example General Insurance (SAMPLE)</div>
+                    <div class="doc-title">POLICY SCHEDULE</div>
+                    <dl>
+                        <div class="row"><dt>Policyholder</dt><dd>Aarav Nair</dd></div>
+                        <div class="row"><dt>Policy No</dt><dd>POL/SMP/2026/352223</dd></div>
+                        <div class="row"><dt>Sum Insured</dt><dd>Rs. 1,000,000</dd></div>
+                        <div class="row found"><dt>Valid until</dt><dd>15 Jun 2028</dd></div>
+                        <div class="row"><dt>Date of Issue</dt><dd>16 Jun 2027</dd></div>
+                    </dl>
+                    <div class="tail"></div>
+                </div>
+                <span class="stamp cat">Insurance</span>
+                <span class="stamp ok">Expiry found</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>What it does for each document</h2>
+        <p class="intro">Four jobs that you would otherwise do by hand, one document at a time.</p>
+        <div class="features">
+            <div class="feature">
+                <h3>Reads the text</h3>
+                <p>OCR turns a phone photo or a scan into text, trying a second reading when the first one finds no date.</p>
+            </div>
+            <div class="feature">
+                <h3>Finds the expiry date</h3>
+                <p>It looks for dates next to words like "valid until" and "expires on", and skips birth, issue and purchase dates.</p>
+            </div>
+            <div class="feature">
+                <h3>Files it by category</h3>
+                <p>Insurance, warranty, certificate, medical or ID proof, chosen from the words in the document. You can change any guess.</p>
+            </div>
+            <div class="feature">
+                <h3>Watches the deadline</h3>
+                <p>Expired documents and ones expiring within 30 days rise to the top of your dashboard.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>From photo to tracked document</h2>
+        <ol class="path">
+            <li><strong>Upload</strong><span>A JPG or PNG of the document.</span></li>
+            <li><strong>Read</strong><span>The text is extracted and searched.</span></li>
+            <li><strong>Check</strong><span>You confirm the date and category.</span></li>
+            <li><strong>Track</strong><span>The dashboard shows what needs attention.</span></li>
+        </ol>
+    </section>
+
+    <section class="closing">
+        <div class="panel">
+            <h2>Add your first document in a minute.</h2>
+            <a class="btn large" href="{{ url_for('register') }}">Create an account</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

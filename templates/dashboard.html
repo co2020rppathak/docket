@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+    <div class="page-head">
+        <div>
+            <h1>Welcome, {{ user.username }}</h1>
+            <p class="muted" style="margin:0">Your documents and what needs attention.</p>
+        </div>
+        <a class="btn" href="{{ url_for('upload') }}">Upload document</a>
+    </div>
+
+    <div class="stats">
+        <div class="stat"><b>{{ total }}</b><span>Total documents</span></div>
+        <div class="stat red"><b>{{ expired }}</b><span>Expired</span></div>
+        <div class="stat amber"><b>{{ soon }}</b><span>Expiring within {{ soon_days }} days</span></div>
+        <div class="stat"><b>{{ unchecked }}</b><span>Waiting for your check</span></div>
+    </div>
+
+    {% if expired or soon %}
+        <div class="attention">
+            <strong>Needs attention:</strong>
+            {% if expired %}{{ expired }} expired{% endif %}{% if expired and soon %}, {% endif %}
+            {% if soon %}{{ soon }} expiring within {{ soon_days }} days{% endif %}
+        </div>
+    {% endif %}
+
+{% set ns = namespace(n=0) %}
+    {% for doc, status in rows %}{% if status.days is not none %}{% set ns.n = ns.n + 1 %}{% endif %}{% endfor %}
+    {% if ns.n %}
+    <div class="deadlines" aria-label="Documents by deadline">
+        <div class="zone z-overdue"><h3>Overdue</h3>
+            {% for doc, status in rows %}{% if status.days is not none and status.days < 0 %}<a class="chip" href="{{ url_for('document_detail', doc_id=doc.id) }}">{{ doc.title }}<small>{{ status.label }}</small></a>{% endif %}{% endfor %}
+        </div>
+        <div class="zone z-soon"><h3>Next {{ soon_days }} days</h3>
+            {% for doc, status in rows %}{% if status.days is not none and 0 <= status.days <= soon_days %}<a class="chip" href="{{ url_for('document_detail', doc_id=doc.id) }}">{{ doc.title }}<small>{{ status.label }}</small></a>{% endif %}{% endfor %}
+        </div>
+        <div class="zone z-quarter"><h3>{{ soon_days + 1 }} to 90 days</h3>
+            {% for doc, status in rows %}{% if status.days is not none and soon_days < status.days <= 90 %}<a class="chip" href="{{ url_for('document_detail', doc_id=doc.id) }}">{{ doc.title }}<small>{{ doc.expiry_date|show_date }}</small></a>{% endif %}{% endfor %}
+        </div>
+        <div class="zone z-later"><h3>Later</h3>
+            {% for doc, status in rows %}{% if status.days is not none and status.days > 90 %}<a class="chip" href="{{ url_for('document_detail', doc_id=doc.id) }}">{{ doc.title }}<small>{{ doc.expiry_date|show_date }}</small></a>{% endif %}{% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <p class="filters">
+        {% if show == "all" %}<strong>All documents</strong>{% else %}<a href="{{ url_for('dashboard') }}">All documents</a>{% endif %}
+        <span class="sep">|</span>
+        {% if show == "attention" %}<strong>Needs attention ({{ expired + soon }})</strong>{% else %}<a href="{{ url_for('dashboard', show='attention') }}">Needs attention ({{ expired + soon }})</a>{% endif %}
+    </p>
+
+    {% if rows %}
+        <div class="table-wrap">
+        <table>
+            <tr>
+                <th>Title</th><th>Category</th><th>Expiry date</th>
+                <th>Text read</th><th>Actions</th>
+            </tr>
+            {% for doc, status in rows %}
+            <tr class="row-{{ status.key }}" style="--i: {{ [loop.index0, 8]|min }}">
+                <td>{{ doc.title }}</td>
+                <td>
+                    {{ doc.category or "-" }}
+                    {% if doc.category_source == "detected" %}
+                        <span class="tag" title="Guessed from the document text. Open the document to confirm it.">Auto</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if doc.expiry_date %}
+                        {{ doc.expiry_date|show_date }}
+                        {% if doc.expiry_source == "detected" %}
+                            <span class="tag" title="Found automatically in the document text. Open the document to confirm it.">Check</span>
+                        {% endif %}
+                        <br><span class="status {{ status.key }}">{{ status.label }}</span>
+                    {% elif needs_choice(doc) %}
+                        -
+                        <span class="tag warn" title="More than one possible date was found, or one looks suspicious. Open the document to choose.">Choose a date</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{% if doc.extracted_text %}Yes{% else %}No{% endif %}</td>
+                <td class="actions">
+                    <a href="{{ url_for('document_detail', doc_id=doc.id) }}">Open</a>
+                    <form method="POST" action="{{ url_for('delete_document', doc_id=doc.id) }}"
+                          onsubmit="return confirm('Delete this document?');">
+                        <button type="submit" class="link-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+    {% elif show == "attention" %}
+        <div class="empty"><p class="muted">Nothing needs attention: no document is expired or expiring within {{ soon_days }} days.</p></div>
+    {% else %}
+        <div class="empty">
+            <svg width="64" height="52" viewBox="0 0 64 52" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 10a4 4 0 0 1 4-4h14l6 7h28a4 4 0 0 1 4 4v27a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" stroke-dasharray="5 4"/><path d="M24 30h16" stroke-linecap="round"/></svg>
+            <p class="muted">Your vault is empty. Add a photo of a policy, warranty or ID and Docket will find its expiry date.</p>
+            <a class="btn" href="{{ url_for('upload') }}">Upload your first document</a>
+        </div>
+    {% endif %}
+{% endblock %}

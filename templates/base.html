@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>{% block page_title %}{% block title %}{% endblock %} - {{ site_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}" class="brand">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+                <rect width="34" height="34" rx="8" fill="#1d4e89"/>
+                <path d="M10 6h10l5 5v17H10z" fill="#fff"/>
+                <path d="M20 6v5h5z" fill="#c8d6ea"/>
+                <path d="M13 15h9M13 19h9M13 23h5" stroke="#9fb0c8" stroke-width="1.6" stroke-linecap="round"/>
+                <circle cx="24" cy="24" r="6" fill="#1e7b58" stroke="#14213d" stroke-width="2"/>
+                <path d="M21.4 24l2 2 3.2-3.8" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <strong>{{ site_name }}</strong>
+            <small>Know before it lapses.</small>
+        </a>
+        {% if user %}
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('upload') }}">Upload</a>
+            <span class="who">{{ user.username }}</span>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}" class="nav-btn">Create account</a>
+        {% endif %}
+    </nav>
+
+    {% block main %}
+    <main class="page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+    {% endblock %}
+
+    <footer>
+        <div class="inner">
+            <strong>{{ site_name }}</strong>
+            <span>{{ project_title }}</span>
+            <a href="{{ url_for('test_results') }}">Test Results</a>
+        </div>
+    </footer>
+</body>
+</html>

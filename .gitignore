@@ -1,0 +1,7 @@
+# Environment and generated files: never commit these
+venv/
+.venv/
+instance/
+uploads/*
+__pycache__/
+*.pyc

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.title }}{% endblock %}
+{% block content %}
+    <h1>{{ doc.title }}</h1>
+
+    <div class="doc-layout">
+    <div class="side">
+        <img class="preview" src="{{ url_for('document_file', doc_id=doc.id) }}" alt="{{ doc.title }}">
+    </div>
+    <div class="details">
+    <h2>Category</h2>
+    {% if doc.category_source == "detected" %}
+        <div class="expiry-box check">
+            <span class="expiry-date">{{ doc.category }}</span>
+            <span class="tag">Please check</span>
+            <p class="muted">
+                Guessed from the document text{% if category_words %}, because it contains:
+                {{ category_words }}{% endif %}. A guess can be wrong, so please check it.
+            </p>
+            <form method="POST" action="{{ url_for('set_category', doc_id=doc.id) }}">
+                <input type="hidden" name="action" value="confirm">
+                <button type="submit" class="btn">Yes, this is correct</button>
+            </form>
+        </div>
+    {% else %}
+        <p>{{ doc.category or "-" }}{% if doc.category_source == "user" %}<span class="confirmed-stamp">Confirmed</span>{% endif %}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('set_category', doc_id=doc.id) }}">
+        <label for="category">Change the category</label>
+        <select id="category" name="category">
+            {% for c in categories %}
+                <option value="{{ c }}" {% if c == doc.category %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="action" value="save" class="btn">Save category</button>
+    </form>
+
+    <h2>Expiry date</h2>
+    {% if doc.expiry_date and doc.expiry_source == "detected" %}
+        <div class="expiry-box check">
+            <span class="expiry-date">{{ doc.expiry_date|show_date }}</span>
+            <span class="tag">Please check</span>
+            <p class="muted">
+                Found automatically in the document text{% if evidence %}, next to the words
+                "{{ evidence }}"{% endif %}. Compare it with the image above: reading text
+                from a photo can make mistakes.
+                {% for text in detected_notes %}{{ text }}{% endfor %}
+            </p>
+            <form method="POST" action="{{ url_for('set_expiry', doc_id=doc.id) }}">
+                <input type="hidden" name="action" value="confirm">
+                <button type="submit" class="btn">Yes, this is correct</button>
+            </form>
+        </div>
+    {% elif doc.expiry_date %}
+        <div class="expiry-box">
+            <span class="expiry-date">{{ doc.expiry_date|show_date }}</span>
+            <span class="confirmed-stamp">Confirmed</span>
+        </div>
+    {% else %}
+        <p class="muted">No expiry date is set for this document.</p>
+    {% endif %}
+    {% if status.key != "none" %}
+        <p><span class="status {{ status.key }}">{{ status.label }}</span></p>
+    {% endif %}
+
+    {% if candidates %}
+        <div class="expiry-box check">
+            <strong>
+                {% if review.source == "replace" %}Found in the new image
+                {% elif review.source == "check" %}Found when the document was checked again
+                {% else %}Possible expiry dates found in the text{% endif %}
+            </strong>
+            {% if candidates|selectattr("selectable")|list|length > 1 %}
+                <p class="muted">More than one possible expiry date was found, so none was filled in. Compare them with the image and choose the right one.</p>
+            {% endif %}
+            {% for c in candidates %}
+                <div class="candidate">
+                    <span class="expiry-date">{% if c.date %}{{ c.date|show_date }}{% else %}{{ c.raw }}{% endif %}</span>
+                    {% if c.selectable %}<span class="tag {% if c.flags %}warn{% endif %}">{% if c.flags %}Check carefully{% else %}Not saved{% endif %}</span>
+                    {% else %}<span class="tag warn">Cannot be used</span>{% endif %}
+                    {% if c.label or c.context %}
+                        <p class="muted">
+                            {% if c.label %}Found next to the words "{{ c.label }}". {% endif %}
+                            {% if c.context %}The line says: "{{ c.context }}"{% endif %}
+                        </p>
+                    {% endif %}
+                    {% for flag in c.flags %}
+                        <p class="flag">This {% if c.date %}date{% else %}"{{ c.raw }}"{% endif %} {{ flag_text[flag] }}.</p>
+                    {% endfor %}
+                    {% for note in c.notes %}{% if note in note_text %}<p class="muted">{{ note_text[note] }}</p>{% endif %}{% endfor %}
+                    {% if c.selectable %}
+                        <form method="POST" action="{{ url_for('set_expiry', doc_id=doc.id) }}">
+                            <input type="hidden" name="candidate" value="{{ c.date.isoformat() }}">
+                            {% if c.needs_override %}<input type="hidden" name="override" value="yes">{% endif %}
+                            <button type="submit" name="action" value="use_candidate" class="btn {% if c.needs_override %}secondary{% endif %}">
+                                {% if c.needs_override %}Use this date anyway{% else %}Use this date{% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <p class="muted">This cannot be saved. If you can read the right date in the image, type it below.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if review_others %}
+                <p class="muted">Other dates in the text, not offered as expiry dates:
+                    {% for o in review_others %}{{ role_names[o.role] }} {{ o.date|show_date }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>
+            {% endif %}
+            <p class="muted">
+                {% if doc.expiry_date %}Your saved date is {{ doc.expiry_date|show_date }} and has not been changed.
+                {% else %}No expiry date is saved for this document.{% endif %}
+            </p>
+            <form method="POST" action="{{ url_for('set_expiry', doc_id=doc.id) }}" class="row-buttons">
+                <button type="submit" name="action" value="keep" class="btn secondary">{% if doc.expiry_date %}Keep my date{% else %}Ignore it{% endif %}</button>
+            </form>
+        </div>
+    {% elif note %}
+        <div class="expiry-box">
+            {% if note.kind == "unreadable" %}
+                <p><strong>Not enough text could be read.</strong></p>
+                <p class="muted">Too little of this image could be read to look for an expiry date. A clearer image may help. You can set the date yourself below.</p>
+            {% elif note.kind == "no_date" %}
+                <p><strong>The text was read, but no expiry date was found.</strong></p>
+                <p class="muted">This document may not have one. If it does, set it below.</p>
+            {% else %}
+                <p><strong>An expiry is mentioned, but the date could not be understood.</strong></p>
+                {% for line in note.wording %}<p class="muted">The text says: "{{ line }}"</p>{% endfor %}
+                {% for c in note.candidates %}
+                    {% for flag in c.flags %}<p class="flag">"{{ c.raw }}" {{ flag_text[flag] }}.</p>{% endfor %}
+                {% endfor %}
+                <p class="muted">Compare with the image, then set the date below.</p>
+            {% endif %}
+            {% if note.others %}
+                <p class="muted">Other dates in the text, not offered as expiry dates:
+                    {% for o in note.others %}{{ role_names[o.role] }} {{ o.date|show_date }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('set_expiry', doc_id=doc.id) }}">
+        <label for="expiry-date">
+            {% if doc.expiry_date %}Change the expiry date{% else %}Set the expiry date{% endif %}
+        </label>
+        <input type="date" id="expiry-date" name="expiry_date" required
+               value="{{ doc.expiry_date.isoformat() if doc.expiry_date else '' }}">
+        <button type="submit" name="action" value="save" class="btn">Save date</button>
+        {% if doc.expiry_date %}
+            <button type="submit" name="action" value="remove" class="btn secondary" formnovalidate>
+                Remove date
+            </button>
+        {% endif %}
+    </form>
+
+    <form method="POST" action="{{ url_for('recheck_expiry', doc_id=doc.id) }}">
+        <button type="submit" class="btn secondary">Check the document again</button>
+        <p class="muted">Reads the original image again and shows the date it finds next to yours. Your saved date is not changed unless you choose it.</p>
+    </form>
+
+    </div>
+    </div>
+
+    <h2>Extracted text</h2>
+    {% if doc.extracted_text %}
+        <div class="text-box">{{ doc.extracted_text }}</div>
+    {% else %}
+        <p class="muted">No text has been extracted from this document yet.</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('extract_document_text', doc_id=doc.id) }}">
+        <button type="submit" class="btn">
+            {% if doc.extracted_text %}Extract text again{% else %}Extract text{% endif %}
+        </button>
+        <a class="btn secondary" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+    </form>
+{% endblock %}

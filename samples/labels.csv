@@ -1,0 +1,61 @@
+filename,category,expiry_date,printed_as,label_used,layout,variant
+idcard_001.jpg,ID Proof,2026-12-08,08 Dec 2026,Valid till,card,hard
+insurance_001.jpg,Insurance,2026-12-01,2026-12-01,Policy Period,inline,lowres
+warranty_001.jpg,Warranty,,,,table,photo
+certificate_001.jpg,Certificate,2027-08-14,14-Aug-2027,Valid Upto,certificate,hard
+health_001.jpg,Medical,2027-02-25,25/02/2027,Exp:,card,photo
+membership_001.jpg,Other,2026-10-17,17/10/2026,Valid till,table,photo
+idcard_002.jpg,ID Proof,2027-06-27,27-06-2027,Valid Upto,card,hard
+insurance_002.png,Insurance,2025-07-23,23-07-2025,Exp:,inline,clean
+warranty_002.jpg,Warranty,2029-12-22,22/12/2029,Valid Upto,inline,lowres
+certificate_002.png,Certificate,2028-06-15,15 Jun 2028,Valid Thru,certificate,clean
+health_002.jpg,Medical,2031-05-11,11 May 2031,Valid Thru,card,photo
+membership_002.jpg,Other,2029-06-21,21/06/2029,Exp:,inline,photo
+idcard_003.jpg,ID Proof,2026-12-23,23/12/2026,Valid Upto,card,hard
+insurance_003.jpg,Insurance,2030-02-02,02/02/2030,Expiry:,table,photo
+warranty_003.jpg,Warranty,2029-11-02,02/11/2029,Warranty valid until,table,lowres
+certificate_003.png,Certificate,,,,certificate,clean
+health_003.png,Medical,2025-06-28,28.06.2025,Expiry Date,card,clean
+membership_003.jpg,Other,,,,inline,photo
+idcard_004.png,ID Proof,2026-12-20,"December 20, 2026",Expiry Date,card,clean
+insurance_004.jpg,Insurance,,,,inline,photo
+warranty_004.jpg,Warranty,,,,table,photo
+certificate_004.jpg,Certificate,2026-11-22,22/11/2026,Valid until,certificate,photo
+health_004.jpg,Medical,2030-07-24,24/07/2030,Valid till,card,lowres
+membership_004.jpg,Other,2026-11-21,21-11-2026,Membership valid until,table,lowres
+idcard_005.jpg,ID Proof,2026-07-01,01/07/2026,Valid Upto,card,photo
+insurance_005.png,Insurance,,,,table,clean
+warranty_005.png,Warranty,2031-08-18,18-08-2031,Expiry:,inline,clean
+certificate_005.jpg,Certificate,2026-06-25,25/06/2026,Valid Upto,certificate,hard
+health_005.jpg,Medical,2027-06-16,2027-06-16,Valid till,card,hard
+membership_005.jpg,Other,2025-12-31,2025-12-31,Valid until,table,photo
+idcard_006.jpg,ID Proof,2026-09-21,21-09-2026,Valid Upto,card,hard
+insurance_006.png,Insurance,2028-06-20,20-Jun-2028,Policy valid until,table,clean
+warranty_006.png,Warranty,2027-11-06,06/11/2027,Date of Expiry,inline,clean
+certificate_006.jpg,Certificate,2028-10-29,29/10/2028,Valid Upto,certificate,photo
+health_006.png,Medical,2026-12-19,19.12.2026,Valid Thru,card,clean
+membership_006.jpg,Other,2028-04-18,18-Apr-2028,Valid until,table,hard
+idcard_007.jpg,ID Proof,2031-07-27,27 Jul 2031,Valid Thru,card,lowres
+insurance_007.jpg,Insurance,2031-07-01,01-07-2031,Expires on,inline,photo
+warranty_007.jpg,Warranty,2026-04-18,18/04/2026,Valid till,table,photo
+certificate_007.jpg,Certificate,2026-11-24,24-Nov-2026,Valid till,certificate,photo
+health_007.png,Medical,2028-04-26,26.04.2028,Expiry Date,card,clean
+membership_007.jpg,Other,2025-07-16,16/07/2025,Exp:,inline,lowres
+idcard_008.png,ID Proof,2026-12-24,2026-12-24,Expiry Date,card,clean
+insurance_008.jpg,Insurance,2029-02-10,10-Feb-2029,Exp:,table,hard
+warranty_008.png,Warranty,2029-11-15,15.11.2029,Valid Thru,inline,clean
+certificate_008.jpg,Certificate,2026-12-09,09/12/2026,Valid till,certificate,photo
+health_008.jpg,Medical,2030-03-30,2030-03-30,Valid Upto,card,photo
+membership_008.jpg,Other,2031-01-23,23/01/2031,Valid until,inline,hard
+idcard_009.png,ID Proof,2026-12-28,28 Dec 2026,Exp:,card,clean
+insurance_009.jpg,Insurance,,,,table,hard
+warranty_009.jpg,Warranty,2025-10-09,09/10/2025,Date of Expiry,table,photo
+certificate_009.jpg,Certificate,2031-01-03,03/01/2031,Expiry Date,certificate,hard
+health_009.jpg,Medical,,,,card,photo
+membership_009.jpg,Other,2026-11-11,11/11/2026,Date of Expiry,inline,lowres
+idcard_010.jpg,ID Proof,2026-12-18,18-Dec-2026,Expiry Date,card,photo
+insurance_010.png,Insurance,2029-04-08,08/04/2029,Expires on,inline,clean
+warranty_010.jpg,Warranty,2030-12-30,30/12/2030,Expires on,inline,photo
+certificate_010.jpg,Certificate,2029-11-14,14-11-2029,Date of Expiry,certificate,lowres
+health_010.jpg,Medical,2029-12-15,15/12/2029,Valid Thru,card,photo
+membership_010.jpg,Other,2030-10-22,22 Oct 2030,Expiry Date,table,photo
